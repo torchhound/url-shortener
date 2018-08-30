@@ -7,7 +7,15 @@ import (
   "log"
   "math/rand"
   "time"
+  "context"
+
+  "github.com/mongodb/mongo-go-driver/mongo"
 )
+
+type Resource struct {
+  url string
+  shortened_url string
+}
 
 func randomInt(min, max int) int {
     return min + rand.Intn(max-min)
@@ -25,18 +33,29 @@ func randomString(len int) string {
     return string(bytes)
 }
 
+func shortenHandler(w http.ResponseWriter, r *http.Request) {
+  urlParam, ok := r.URL.Query()["url"]
+  var message string
+  if urlParam != nil || ok {
+    rand.Seed(time.Now().UnixNano())
+    message = randomString(4)
+  } else {
+    message = "No URL present..."
+  }
+  fmt.Fprintf(w, html.EscapeString(message))
+}
+
+func expandHandler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, "Not Yet Implemented") 
+}
+
 func main() {
-  http.HandleFunc("/shorten", func(w http.ResponseWriter, r *http.Request) {
-    urlParam, ok := r.URL.Query()["url"]
-    var message string
-    if urlParam != nil || ok {
-      rand.Seed(time.Now().UnixNano())
-      message = randomString(4)
-    } else {
-      message = "No URL present..."
-    }
-    fmt.Fprintf(w, html.EscapeString(message))
-  })
+  client, err := mongo.NewClient("mongodb://database:27017")
+  if err != nil { log.Fatal(err) }
+  err = client.Connect(context.TODO())
+  if err != nil { log.Fatal(err) }
+  http.HandleFunc("/shorten", shortenHandler)
+  http.HandleFunc("/expand", expandHandler)
 
   log.Fatal(http.ListenAndServe(":8080", nil))
 }
