@@ -1,6 +1,6 @@
 # url-shortener
 
-Url shortening service built with Go.
+Url shortening service built with Go, MongoDB, and Docker.
 
 ## Build
 
