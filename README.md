@@ -6,6 +6,8 @@ Url shortening service built with Go, MongoDB, and Docker.
 
 `export GOPATH=path_to_project_directory`
 
+`go get -d -v`
+
 `go build`
 
 ## Run

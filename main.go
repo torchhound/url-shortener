@@ -69,7 +69,7 @@ func (c *Connections) expandHandler(w http.ResponseWriter, r *http.Request) {
   shortParam, ok := r.URL.Query()["short"]
   var output string
   if shortParam != nil || ok {
-    res := c.Collection.FindOne(nil, bson.NewDocument(bson.EC.String("url", shortParam[0])))
+    res := c.Collection.FindOne(nil, bson.NewDocument(bson.EC.String("shortened_url", shortParam[0])))
     resource := &Resource{}
     res.Decode(resource)
 
